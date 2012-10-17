@@ -13,6 +13,10 @@ var xmppChannels []chan *ChatView
 
 type XMPPHandler func(*ChatView)
 
+func init() {
+	xmppChannels = make([]chan *ChatView, 0)
+}
+
 type ChatView struct {
 	rem string
 	typ string
@@ -58,7 +62,6 @@ func xmppReceive(c chan bool) {
 }
 
 func StartXMPP(server string, user string, passwd string) {
-	xmppChannels = make([]chan *ChatView, 0)
 	go func() {
 		// keep running forever; reconnect if dc
 		for {

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/exec"
 	"strings"
 )
 
@@ -28,6 +29,18 @@ func ForwardToIRC(cv *ChatView) {
 	}
 }
 
+func UName(cv *ChatView) {
+	if cv.GetText() == "uname" {
+		cmd := exec.Command("uname", "-a")
+		output, err := cmd.CombinedOutput()
+		if err != nil {
+			XMPPSendMessage(cv.GetRemote(), fmt.Sprintf("%s", err))
+		} else {
+			XMPPSendMessage(cv.GetRemote(), string(output))
+		}
+	}
+}
+
 func main() {
 	user := flag.String("user", "", "gtalk username")
 	passwd := flag.String("passwd", "", "gtalk password")
@@ -39,12 +52,14 @@ func main() {
 		flag.PrintDefaults()
 		return
 	}
+
 	StartXMPP("talk.google.com:443", *user, *passwd)
 
 	AddXMPPHandler(Print)
 	AddXMPPHandler(Log)
 	AddXMPPHandler(Reply)
 	AddXMPPHandler(ForwardToIRC)
+	AddXMPPHandler(UName)
 
 	for {
 		in := bufio.NewReader(os.Stdin)
