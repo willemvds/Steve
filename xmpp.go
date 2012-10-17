@@ -47,13 +47,13 @@ func xmppReceive(c chan bool) {
 			c <- false
 			return
 		}
+		cv := NewChatView(&chat)
 		for i := 0; i < len(xmppChannels); i++ {
 			idx := i
 			go func() {
-				xmppChannels[idx] <- NewChatView(&chat)
+				xmppChannels[idx] <- cv
 			}()
 		}
-		fmt.Println(chat.Remote, chat.Text)
 	}
 }
 
