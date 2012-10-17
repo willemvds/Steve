@@ -21,10 +21,19 @@ func Reply(cv *ChatView) {
 	XMPPSendMessage(cv.GetRemote(), fmt.Sprintf("ACK: %s", cv.GetText()))
 }
 
+func ForwardToIRC(cv *ChatView) {
+	tokens := strings.SplitN(cv.GetText(), " ", 2)
+	if len(tokens) == 2 {
+		IRCSendMessage(strings.TrimSpace(tokens[0]), tokens[1])
+	}
+}
+
 func main() {
 	user := flag.String("user", "", "gtalk username")
 	passwd := flag.String("passwd", "", "gtalk password")
 	flag.Parse()
+
+	go StartIRC("irc.freenode.org", "monkeysteve")
 
 	if len(*user) == 0 || len(*passwd) == 0 {
 		flag.PrintDefaults()
@@ -35,6 +44,7 @@ func main() {
 	AddXMPPHandler(Print)
 	AddXMPPHandler(Log)
 	AddXMPPHandler(Reply)
+	AddXMPPHandler(ForwardToIRC)
 
 	for {
 		in := bufio.NewReader(os.Stdin)
