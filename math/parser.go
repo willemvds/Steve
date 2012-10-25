@@ -9,27 +9,30 @@ import (
 
 type Numnum int
 
-func (n Numnum) Add(v Numnum) Numnum {
+func (n Numnum) Add(v Numnum) (Numnum, error) {
 	fmt.Printf("<<< Doing %d + %d = %d >>>\n", n, v, n+v)
-	return n + v
+	return n + v, nil
 }
 
-func (n Numnum) Min(v Numnum) Numnum {
+func (n Numnum) Min(v Numnum) (Numnum, error) {
 	fmt.Printf("<<< Doing %d - %d = %d >>>\n", n, v, n-v)
-	return n - v
+	return n - v, nil
 }
 
-func (n Numnum) Mul(v Numnum) Numnum {
+func (n Numnum) Mul(v Numnum) (Numnum, error) {
 	fmt.Printf("<<< Doing %d * %d = %d >>>\n", n, v, n*v)
-	return n * v
+	return n * v, nil
 }
 
-func (n Numnum) Div(v Numnum) Numnum {
+func (n Numnum) Div(v Numnum) (Numnum, error) {
+	if v == 0 {
+		return 0, errors.New("Steve brain hurt")
+	}
 	fmt.Printf("<<< Doing %d / %d = %d >>>\n", n, v, n/v)
-	return n / v
+	return n / v, nil
 }
 
-func (n Numnum) ExecOp(op rune, v Numnum) Numnum {
+func (n Numnum) ExecOp(op rune, v Numnum) (Numnum, error) {
 	switch op {
 	case ADD:
 		return n.Add(v)
@@ -84,13 +87,14 @@ func (p *Parser) NextToken() *Item {
 }
 
 func (p *Parser) Error(err string) {
+	fmt.Printf("Parse error %s\n", err)
 	p.parseErr = errors.New(err)
 }
 
 func parseNumber(p *Parser) ParseStateFunc {
 	token := p.NextToken()
 	if token == nil {
-		p.Error("Empty token. We're done here")
+		//p.Error("Empty token. We're done here")
 		return nil
 	}
 	if token.Typ == ItemLeftBracket {
@@ -114,7 +118,7 @@ func parseNumber(p *Parser) ParseStateFunc {
 func parseOperator(p *Parser) ParseStateFunc {
 	token := p.NextToken()
 	if token == nil {
-		p.Error("Empty token. We're done here")
+		//p.Error("Empty token. We're done here")
 		return nil
 	}
 	if token.Typ == ItemRightBracket {

@@ -48,6 +48,9 @@ func (t *Tree) PopRoot() {
 		t.root = oldRoot
 		return
 	}
+	if oldRoot == nil {
+		return
+	}
 	oldRoot.Parent = t.root
 	if t.root.Left == nil {
 		t.root.Left = oldRoot
@@ -123,7 +126,10 @@ func ReduceNode(n *Node) *Node {
 		fmt.Printf("Cant reduce this bro, previous reduce turn node to nil\n")
 		return nil
 	}
-	result := (*n.Left.numval).ExecOp(n.opval, *n.Right.numval)
+	result, err := (*n.Left.numval).ExecOp(n.opval, *n.Right.numval)
+	if err != nil {
+		return nil
+	}
 	return &Node{
 		typ:    NT_Number,
 		numval: &result,
