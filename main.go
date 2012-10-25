@@ -1,6 +1,7 @@
 package main
 
 import (
+	"./math"
 	"bufio"
 	"flag"
 	"fmt"
@@ -41,6 +42,15 @@ func UName(cv *ChatView) {
 	}
 }
 
+func DoMath(cv *ChatView) {
+	if strings.HasSuffix(cv.GetText(), "= ?") {
+		expr := strings.TrimSpace(cv.GetText()[0 : len(cv.GetText())-3])
+		answer := math.Parse("STEVE!", expr)
+		XMPPSendMessage(cv.GetRemote(), fmt.Sprintf("%d", answer))
+		//fmt.Printf("Answer is %d\n", answer)
+	}
+}
+
 func main() {
 	user := flag.String("user", "", "gtalk username")
 	passwd := flag.String("passwd", "", "gtalk password")
@@ -60,6 +70,7 @@ func main() {
 	AddXMPPHandler(Reply)
 	AddXMPPHandler(ForwardToIRC)
 	AddXMPPHandler(UName)
+	AddXMPPHandler(DoMath)
 
 	for {
 		in := bufio.NewReader(os.Stdin)
