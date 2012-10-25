@@ -1,6 +1,7 @@
 package math
 
 import (
+	"errors"
 	"fmt"
 	"strconv"
 	"unicode/utf8"
@@ -45,14 +46,15 @@ func (n Numnum) ExecOp(op rune, v Numnum) Numnum {
 type ParseStateFunc func(p *Parser) ParseStateFunc
 
 type Parser struct {
-	Name   string
-	Tokens []Item
-	state  ParseStateFunc
-	index  int
-	res    *Numnum
-	op     string
-	expr   string
-	tree   Tree
+	Name     string
+	Tokens   []Item
+	state    ParseStateFunc
+	parseErr error
+	index    int
+	res      *Numnum
+	op       string
+	expr     string
+	tree     Tree
 }
 
 func (p *Parser) Expr() string {
@@ -63,11 +65,14 @@ func (p *Parser) AddToken(t Item) {
 	p.Tokens = append(p.Tokens, t)
 }
 
-func (p *Parser) BuildTree() *Tree {
+func (p *Parser) BuildTree() (*Tree, error) {
 	for p.state = parseNumber; p.state != nil; {
 		p.state = p.state(p)
 	}
-	return &p.tree
+	if p.parseErr != nil {
+		return nil, p.parseErr
+	}
+	return &p.tree, nil
 }
 
 func (p *Parser) NextToken() *Item {
@@ -78,13 +83,14 @@ func (p *Parser) NextToken() *Item {
 	return nil
 }
 
-func (p *Parser) Result() Numnum {
-	return *p.res
+func (p *Parser) Error(err string) {
+	p.parseErr = errors.New(err)
 }
 
 func parseNumber(p *Parser) ParseStateFunc {
 	token := p.NextToken()
 	if token == nil {
+		p.Error("Empty token. We're done here")
 		return nil
 	}
 	if token.Typ == ItemLeftBracket {
@@ -92,13 +98,14 @@ func parseNumber(p *Parser) ParseStateFunc {
 		return parseNumber
 	}
 	if token.Typ != ItemNumber {
-		fmt.Printf("WAT!!")
+		p.Error(fmt.Sprintf("Expected number, got %s", token.String()))
 		return nil
 	}
 	num, err := strconv.Atoi(token.Val())
 	n := Numnum(num)
 	if err != nil {
-		fmt.Printf("That thing is not a number, ( . Y . )")
+		p.Error(fmt.Sprintf("Could not convert %s to a number", num))
+		return nil
 	}
 	p.tree.AddNumber(&n)
 	return parseOperator
@@ -107,6 +114,7 @@ func parseNumber(p *Parser) ParseStateFunc {
 func parseOperator(p *Parser) ParseStateFunc {
 	token := p.NextToken()
 	if token == nil {
+		p.Error("Empty token. We're done here")
 		return nil
 	}
 	if token.Typ == ItemRightBracket {
@@ -114,7 +122,7 @@ func parseOperator(p *Parser) ParseStateFunc {
 		return parseOperator
 	}
 	if token.Typ != ItemOperator {
-		fmt.Printf("expecting operator, got nothing\n")
+		p.Error("expected operator but got something else")
 		return nil
 	}
 	r, _ := utf8.DecodeRuneInString(token.Val())
@@ -122,7 +130,7 @@ func parseOperator(p *Parser) ParseStateFunc {
 	return parseNumber
 }
 
-func Parse(name string, expr string) Numnum {
+func Parse(name string, expr string) (Numnum, error) {
 	fmt.Printf("Now parsing %s\n", expr)
 	p := &Parser{
 		Name:  name,
@@ -134,9 +142,15 @@ func Parse(name string, expr string) Numnum {
 
 	l := Lex(name, expr)
 	for next := l.NextItem(); next.Typ != ItemEOF; next = l.NextItem() {
+		if next.Typ == ItemError {
+			return 0, errors.New("Invalid token encountered, goodbye")
+		}
 		p.AddToken(next)
 	}
-	tree := p.BuildTree()
-	result, _ := tree.Parse()
-	return result
+	tree, err := p.BuildTree()
+	if err != nil {
+		return 0, err
+	}
+	result, err := tree.Parse()
+	return result, err
 }

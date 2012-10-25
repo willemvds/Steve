@@ -45,9 +45,12 @@ func UName(cv *ChatView) {
 func DoMath(cv *ChatView) {
 	if strings.HasSuffix(cv.GetText(), "= ?") {
 		expr := strings.TrimSpace(cv.GetText()[0 : len(cv.GetText())-3])
-		answer := math.Parse("STEVE!", expr)
+		answer, err := math.Parse("STEVE!", expr)
+		if err != nil {
+			XMPPSendMessage(cv.GetRemote(), "Steve not know!")
+			return
+		}
 		XMPPSendMessage(cv.GetRemote(), fmt.Sprintf("%d", answer))
-		//fmt.Printf("Answer is %d\n", answer)
 	}
 }
 
