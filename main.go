@@ -1,6 +1,7 @@
 package main
 
 import (
+	"./irc"
 	"./math"
 	"./xmpp"
 	"./zeromq"
@@ -14,6 +15,7 @@ import (
 )
 
 var XMPPSendMessage func(string, string) error
+var IRCSendMessage func(string, string) error
 
 func PrintBytes(b []byte) {
 	fmt.Println("Received from ZeroMQ:", string(b))
@@ -87,6 +89,12 @@ func main() {
 		return
 	}
 
+	freenode := irc.New()
+	freenode.Start("irc.freenode.org", "monkeysteve")
+	IRCSendMessage = func(target string, message string) error {
+		return freenode.SendMessage(target, message)
+	}
+
 	gtalk := xmpp.New()
 	gtalk.Start("talk.google.com:443", *user, *passwd)
 	XMPPSendMessage = func(target string, message string) error {
@@ -103,8 +111,6 @@ func main() {
 	zmq.Start("tcp://127.0.0.1:4080")
 	zmq.AddHandler(PrintBytes)
 	zmq.AddHandler(Taxes)
-
-	go StartIRC("irc.freenode.org", "monkeysteve")
 
 	for {
 		in := bufio.NewReader(os.Stdin)
