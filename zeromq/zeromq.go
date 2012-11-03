@@ -52,6 +52,7 @@ func (z *zeromq) receive(c chan bool) {
 
 func (z *zeromq) Start(addr string) {
 	go func() {
+		// keep running forever; reconnect if dc
 		for {
 			err := z.listen(addr)
 			if err == nil {
@@ -61,6 +62,7 @@ func (z *zeromq) Start(addr string) {
 				<-c
 			} else {
 				time.Sleep(2500 * time.Millisecond)
+				fmt.Println(err)
 			}
 		}
 	}()
