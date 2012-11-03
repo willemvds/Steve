@@ -1,13 +1,13 @@
 package main
 
 import (
-	"./irc"
-	"./math"
-	"./xmpp"
-	"./zeromq"
 	"bufio"
 	"flag"
 	"fmt"
+	"github.com/willemvds/Steve/irc"
+	"github.com/willemvds/Steve/math"
+	"github.com/willemvds/Steve/xmpp"
+	"github.com/willemvds/Steve/zeromq"
 	"log"
 	"os"
 	"os/exec"
