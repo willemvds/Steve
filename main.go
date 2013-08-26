@@ -45,7 +45,9 @@ func Log(cv *xmpp.ChatView) {
 }
 
 func Reply(cv *xmpp.ChatView) {
-	XMPPSendMessage(cv.GetRemote(), fmt.Sprintf("ACK: %s", cv.GetText()))
+	if len(cv.GetText()) > 0 {
+		XMPPSendMessage(cv.GetRemote(), fmt.Sprintf("ACK: %s", cv.GetText()))
+	}
 }
 
 func ForwardToIRC(cv *xmpp.ChatView) {

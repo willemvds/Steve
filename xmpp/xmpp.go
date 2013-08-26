@@ -33,7 +33,7 @@ func (c *ChatView) GetText() string {
 	return c.txt
 }
 
-func NewChatView(c *goxmpp.Chat) *ChatView {
+func NewChatView(c goxmpp.Chat) *ChatView {
 	return &ChatView{
 		rem: c.Remote,
 		typ: c.Type,
@@ -49,12 +49,17 @@ func (x *xmpp) receive(c chan bool) {
 			c <- false
 			return
 		}
-		cv := NewChatView(&chat)
-		for i := 0; i < len(x.hndChannels); i++ {
-			idx := i
-			go func() {
-				x.hndChannels[idx] <- cv
-			}()
+		switch v := chat.(type) {
+		case goxmpp.Chat:
+			cv := NewChatView(chat.(goxmpp.Chat))
+			for i := 0; i < len(x.hndChannels); i++ {
+				idx := i
+				go func() {
+					x.hndChannels[idx] <- cv
+				}()
+			}
+		case goxmpp.Presence:
+			fmt.Println(v.From, v.Show)
 		}
 	}
 }

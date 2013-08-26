@@ -10,8 +10,8 @@ import (
 type Handler func([]byte)
 
 type zeromq struct {
-	context     zmq.Context
-	socket      zmq.Socket
+	context     *zmq.Context
+	socket      *zmq.Socket
 	hndChannels []chan []byte
 }
 
