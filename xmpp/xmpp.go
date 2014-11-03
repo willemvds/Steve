@@ -69,7 +69,7 @@ func (x *xmpp) Start(server string, user string, passwd string) {
 		// keep running forever; reconnect if dc
 		for {
 			var err error
-			x.client, err = goxmpp.NewClient(server, user, passwd)
+			x.client, err = goxmpp.NewClient(server, user, passwd, false)
 			x.connected = (err == nil)
 			if err == nil {
 				c := make(chan bool)

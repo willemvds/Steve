@@ -14,22 +14,27 @@ type irc struct {
 func (i *irc) Start(server string, user string) {
 	go func() {
 		for {
-			i.conn = goirc.SimpleClient(user)
+			cfg := goirc.NewConfig(user)
+			cfg.SSL = true
+			cfg.Server = "irc.freenode.net:7000"
+			cfg.NewNick = func(n string) string { return n + "^" }
+			i.conn = goirc.Client(cfg)
+			//i.conn = goirc.SimpleClient(user)
 			//ircConn.SSL = true
 
-			i.conn.AddHandler("connected", func(conn *goirc.Conn, line *goirc.Line) {
+			i.conn.HandleFunc("connected", func(conn *goirc.Conn, line *goirc.Line) {
 				//conn.Join("#channel")
 				i.connected = true
 			})
 
 			quit := make(chan bool)
-			i.conn.AddHandler("disconnected", func(conn *goirc.Conn, line *goirc.Line) {
+			i.conn.HandleFunc("disconnected", func(conn *goirc.Conn, line *goirc.Line) {
 				i.connected = false
 				quit <- true
 			})
 
 			// Tell client to connect
-			if err := i.conn.Connect(server); err != nil {
+			if err := i.conn.Connect(); err != nil {
 				fmt.Printf("Connection error: %s\n", err)
 			}
 
