@@ -1,0 +1,10 @@
+github.com/alecthomas/gozmq v0.0.0-20140622232202-d1b01a2df6b2 h1:avoSu+wd97LeIY/JW9gQQwo6uKmsBOuWtLTJT5ewHWU=
+github.com/alecthomas/gozmq v0.0.0-20140622232202-d1b01a2df6b2/go.mod h1:4M6gCnOnuQEAVnqf5I1tc+/6c6ZiScidY+LkurMUcbY=
+github.com/fluffle/goirc v1.0.3 h1:xyH13ALiX3ZkspwAmUZUg82YXmcMrShiZHvzZT5ZGEY=
+github.com/fluffle/goirc v1.0.3/go.mod h1:SqQ+D/FJYnNf6btZfM1NsOkESlVw39Q5bvjjRUUQ2Ho=
+github.com/golang/mock v1.1.1 h1:G5FRp8JnTd7RQH5kemVNlMeyXQAztQ3mOWV95KxsXH8=
+github.com/golang/mock v1.1.1/go.mod h1:oTYuIxOrZwtPieC+H1uAHpcLFnEyAGVDL/k47Jfbm0A=
+github.com/mattn/go-xmpp v0.0.0-20200309091041-899ef71e80d2 h1:F544zRtDc/pMpFNHN46oeXV2jIAG4DoMH+6zlVSn0Q8=
+github.com/mattn/go-xmpp v0.0.0-20200309091041-899ef71e80d2/go.mod h1:Cs5mF0OsrRRmhkyOod//ldNPOwJsrBvJ+1WRspv0xoc=
+golang.org/x/net v0.0.0-20180926154720-4dfa2610cdf3 h1:dgd4x4kJt7G4k4m93AYLzM8Ni6h2qLTfh9n9vXJT3/0=
+golang.org/x/net v0.0.0-20180926154720-4dfa2610cdf3/go.mod h1:mL1N/T3taQHkDXs73rZJwtUhF3w3ftmwwsq0BUmARs4=
