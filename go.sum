@@ -1,5 +1,3 @@
-github.com/alecthomas/gozmq v0.0.0-20140622232202-d1b01a2df6b2 h1:avoSu+wd97LeIY/JW9gQQwo6uKmsBOuWtLTJT5ewHWU=
-github.com/alecthomas/gozmq v0.0.0-20140622232202-d1b01a2df6b2/go.mod h1:4M6gCnOnuQEAVnqf5I1tc+/6c6ZiScidY+LkurMUcbY=
 github.com/fluffle/goirc v1.0.3 h1:xyH13ALiX3ZkspwAmUZUg82YXmcMrShiZHvzZT5ZGEY=
 github.com/fluffle/goirc v1.0.3/go.mod h1:SqQ+D/FJYnNf6btZfM1NsOkESlVw39Q5bvjjRUUQ2Ho=
 github.com/golang/mock v1.1.1 h1:G5FRp8JnTd7RQH5kemVNlMeyXQAztQ3mOWV95KxsXH8=
