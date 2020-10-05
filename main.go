@@ -4,22 +4,18 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
-	"github.com/willemvds/Steve/irc"
-	"github.com/willemvds/Steve/math"
-	"github.com/willemvds/Steve/xmpp"
-	"github.com/willemvds/Steve/zeromq"
 	"log"
 	"os"
 	"os/exec"
 	"strings"
+
+	"github.com/willemvds/Steve/irc"
+	"github.com/willemvds/Steve/math"
+	"github.com/willemvds/Steve/xmpp"
 )
 
 var XMPPSendMessage func(string, string) error
 var IRCSendMessage func(string, string) error
-
-func PrintBytes(b []byte) {
-	fmt.Println("Received from ZeroMQ:", string(b))
-}
 
 func Taxes(b []byte) {
 	s := string(b)
@@ -109,11 +105,6 @@ func main() {
 	gtalk.AddHandler(UName)
 	gtalk.AddHandler(DoMath)
 
-	zmq := zeromq.New()
-	zmq.Start("tcp://127.0.0.1:4080")
-	zmq.AddHandler(PrintBytes)
-	zmq.AddHandler(Taxes)
-
 	for {
 		in := bufio.NewReader(os.Stdin)
 		line, err := in.ReadString('\n')
@@ -129,6 +120,4 @@ func main() {
 			}
 		}
 	}
-
-	select {}
 }
